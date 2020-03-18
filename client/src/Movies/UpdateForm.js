@@ -1,43 +1,44 @@
 import React, { useState } from "react";
 
 import { useHistory } from "react-router-dom";
+
 import axios from "axios";
 
 const UpdateForm = props => {
-  const history = useHistory();
-
-  console.log("Props in update form: ", props);
-
-  const updateId = Number(props.match.params.id);
-
-  console.log("ID: ", updateId);
-
-  const [newMovie, setNewMovie] = useState();
-
-  const updateMovie = updateId => {
-    axios
-      .put(`http://localhost:5000/movies/${updateId}`, newMovie)
-      .then(res => {
-        console.log("Request returned from API PUT request: ", res.data);
-        setNewMovie(res.data);
-      })
-      .catch(err => {
-        console.log("ERROR: data not sent to API via PUT: ", err);
-      });
-  };
-
-  const handleChange = e => {
-    setNewMovie({
-      ...newMovie,
-      [e.target.name]: e.target.value
-    });
-    console.log(newMovie);
-  };
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    updateMovie(newMovie);
-    history.push("/");
+    
+    console.log("Props in update form: ", props);
+    
+    const updateId = Number(props.match.params.id);
+    
+    console.log("ID: ", updateId);
+    
+    const [newMovie, setNewMovie] = useState();
+    
+    const updateMovie = updateId => {
+        axios
+        .put(`http://localhost:5000/movies/${updateId}`, newMovie)
+        .then(res => {
+            console.log("Request returned from API PUT request: ", res.data);
+            setNewMovie(res.data);
+        })
+        .catch(err => {
+            console.log("ERROR: data not sent to API via PUT: ", err);
+        });
+    };
+    
+    const handleChange = e => {
+        setNewMovie({
+            ...newMovie,
+            [e.target.name]: e.target.value
+        });
+        console.log(newMovie);
+    };
+    
+    const handleSubmit = e => {
+        e.preventDefault();
+        let history = useHistory();
+        updateMovie(newMovie);
+        history.push("/");
   };
 
   return (
@@ -82,7 +83,7 @@ const UpdateForm = props => {
           />
         </label>
 
-        <input className="button update-button" type="submit" />
+       <input className="button update-button" type="submit" >Submit</input>
       </form>
     </div>
   );
