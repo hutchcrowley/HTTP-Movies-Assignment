@@ -1,48 +1,41 @@
-import React from "react";
-import axios from "axios";
+import React, { useEffect, useState, useContext } from "react";
+
+import { useParams } from "react-router-dom";
+import { AppContext } from "../contexts/AppContext";
+
 import MovieCard from "./MovieCard";
-export default class Movie extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      movie: null
-    };
-  }
 
-  componentDidMount() {
-    this.fetchMovie(this.props.match.params.id);
-  }
+const Movie = () => {
+  const { fetchMovie, addToSavedList, updateMovie } = useContext(AppContext);
+  const [movie, setMovie] = useState({});
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.match.params.id !== newProps.match.params.id) {
-      this.fetchMovie(newProps.match.params.id);
-    }
-  }
+  let { id } = useParams();
 
-  fetchMovie = id => {
-    axios
-      .get(`http://localhost:5000/api/movies/${id}`)
-      .then(res => this.setState({ movie: res.data }))
-      .catch(err => console.log(err.response));
+  useEffect(() => {
+    fetchMovie(id);
+  }, [fetchMovie, id]);
+
+  const saveMovie = (id, movie) => {
+    setMovie(id);
+    console.log(movie);
+    addToSavedList(movie);
   };
 
-  saveMovie = () => {
-    const addToSavedList = this.props.addToSavedList;
-    addToSavedList(this.state.movie);
-  };
-
-  render() {
-    if (!this.state.movie) {
-      return <div>Loading movie information...</div>;
-    }
-
+  if (!movie) {
+    return <div>Loading movie information...</div>;
+  } else {
     return (
       <div className="save-wrapper">
-        <MovieCard movie={this.state.movie} />
-        <div className="save-button" onClick={this.saveMovie}>
+        <MovieCard movie={movie} />
+        <button className="save-button" onClick={saveMovie}>
           Save
-        </div>
+        </button>
+        <button classNam="update-button" onClick={updateMovie}>
+          Update
+        </button>
       </div>
     );
   }
-}
+};
+
+export default Movie;
